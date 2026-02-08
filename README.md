@@ -1,6 +1,12 @@
-# 🏦 Banking Security Platform
+<h1 align="center"> 🏦 Banking Security Platform 🔐 </h1>
 
 A secure banking application built with Flask and SQLAlchemy, demonstrating best practices for web security, user authentication, and data integrity. This platform includes features like secure user management, transaction processing, fraud detection, and a security dashboard, with all timestamps correctly handled for the IST timezone.
+
+## 📸 Screenshots
+
+| Home Screen | Multi-Factor Authentication | Security Dashboard |
+| :---: | :---: | :---: |
+| <img src="imgs/Home%20screen%20.jpg" alt="Home Screen" width="250"/> | <img src="imgs/MFA.jpg" alt="MFA" width="250"/> | <img src="imgs/SOC.jpg" alt="Security Dashboard" width="250"/> |
 
 ## ✨ Features
 
@@ -45,7 +51,7 @@ Follow these steps to get the application running locally.
 
 **1. Clone the repository:**
 ```bash
-git clone https://github.com/Kaif-T-200/Banking-Security-Platform.git
+git clone https://github.com/your-username/banking-security-platform.git
 cd banking-security-platform
 ```
 
@@ -91,9 +97,14 @@ python app.py
 ```
 The application will be available at `http://127.0.0.1:5000`.
 
+## 🌐 Live Demo
+
+The application is deployed and available live: [Click Here](https://banking-security-platform.onrender.com/)
+
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 
 ## 👤 Author
 
