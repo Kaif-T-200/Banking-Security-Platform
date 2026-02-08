@@ -99,5 +99,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 [LinkedIn](https://www.linkedin.com/in/kaif-tarasgar-0b5425326/) • [Twitter/X](https://x.com/Kaif_T_200)
 
-# Made with ❤️ by Kaif Tarasgar in Python
+# Made with ❤️ by Kaif Tarasgar
 
