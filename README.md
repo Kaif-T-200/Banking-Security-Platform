@@ -51,7 +51,7 @@ Follow these steps to get the application running locally.
 
 **1. Clone the repository:**
 ```bash
-git clone https://github.com/your-username/banking-security-platform.git
+git clone https://github.com/Kaif-T-200/Banking-Security-Platform.git
 cd banking-security-platform
 ```
 
