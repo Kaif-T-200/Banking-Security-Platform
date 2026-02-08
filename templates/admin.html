@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="bi bi-shield-fill-exclamation"></i> Security Operations Center</h2>
+        <p class="text-muted">Real-time security monitoring and threat intelligence</p>
+    </div>
+</div>
+
+<!-- Security Metrics -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Flagged Transactions</h5>
+                <h2 class="display-4">{{ flagged_transactions }}</h2>
+                <p class="card-text">Require manual review</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Locked Accounts</h5>
+                <h2 class="display-4">{{ locked_accounts }}</h2>
+                <p class="card-text">Security lockouts active</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Active Sessions</h5>
+                <h2 class="display-4" id="activeSessions">0</h2>
+                <p class="card-text">Real-time monitoring</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">System Health</h5>
+                <h2 class="display-4" id="systemHealth">0%</h2>
+                <p class="card-text">All systems operational</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security Logs -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-list-check"></i> Recent Security Events
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Event Type</th>
+                                <th>Severity</th>
+                                <th>Description</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr class="
+                                {% if log.severity == 'critical' %}table-danger
+                                {% elif log.severity == 'warning' %}table-warning
+                                {% endif %}
+                            ">
+                                <td>{{ log.created_at.strftime('%H:%M:%S') }}</td>
+                                <td>{{ log.event_type }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 
+                                        'danger' if log.severity == 'critical'
+                                        else 'warning' if log.severity == 'warning'
+                                        else 'info'
+                                    }}">
+                                        {{ log.severity|title }}
+                                    </span>
+                                </td>
+                                <td>{{ log.description }}</td>
+                                <td><code>{{ log.ip_address }}</code></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Critical Events -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle-fill"></i> Critical Events Requiring Attention
+            </div>
+            <div class="card-body">
+                {% if critical_events %}
+                <div class="list-group">
+                    {% for event in critical_events %}
+                    <div class="list-group-item list-group-item-danger">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ event.event_type|title }}</h6>
+                            <small>{{ event.created_at.strftime('%H:%M:%S') }}</small>
+                        </div>
+                        <p class="mb-1">{{ event.description }}</p>
+                        <small>IP: {{ event.ip_address }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted">No critical events at this time</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Update security metrics in real-time
+function updateSecurityMetrics() {
+    fetch('/api/security-metrics')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('activeSessions').textContent = data.active_sessions;
+            document.getElementById('systemHealth').textContent = data.system_health + '%';
+            
+            // Update threat level indicator
+            const threatLevel = data.threat_level.toLowerCase();
+            const threatColors = {
+                'low': 'success',
+                'medium': 'warning',
+                'high': 'danger'
+            };
+            // You can add more UI updates here
+        });
+}
+
+// Update every 30 seconds
+setInterval(updateSecurityMetrics, 30000);
+updateSecurityMetrics(); // Initial call
+</script>
+{% endblock %}

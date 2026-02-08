@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard - SecureBank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="bi bi-shield-lock"></i> SecureBank
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a class="btn btn-outline-light btn-sm ms-2" href="/logout">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <h2><i class="bi bi-shield-fill-exclamation"></i> Security Operations Center</h2>
+        <p class="text-muted">Real-time security monitoring and threat intelligence</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-body text-center">
+                        <h5>Flagged Transactions</h5>
+                        <h2 class="display-4">{{ flagged_transactions }}</h2>
+                        <p class="mb-0">Require review</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-body text-center">
+                        <h5>Locked Accounts</h5>
+                        <h2 class="display-4">{{ locked_accounts }}</h2>
+                        <p class="mb-0">Security lockouts</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body text-center">
+                        <h5>Active Sessions</h5>
+                        <h2 class="display-4" id="activeSessions">0</h2>
+                        <p class="mb-0">Real-time</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body text-center">
+                        <h5>System Health</h5>
+                        <h2 class="display-4" id="systemHealth">0%</h2>
+                        <p class="mb-0">Operational</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="bi bi-list-check"></i> Recent Security Events
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>Severity</th>
+                                <th>Description</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr class="
+                                {% if log.severity == 'critical' %}table-danger
+                                {% elif log.severity == 'warning' %}table-warning
+                                {% endif %}
+                            ">
+                                <td>{{ log.created_at | format_ist('%d-%m-%Y %H:%M:%S') }}</td>
+                                <td>{{ log.event_type }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 
+                                        'danger' if log.severity == 'critical'
+                                        else 'warning' if log.severity == 'warning'
+                                        else 'info'
+                                    }}">
+                                        {{ log.severity }}
+                                    </span>
+                                </td>
+                                <td>{{ log.description }}</td>
+                                <td><code>{{ log.ip_address }}</code></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateSecurityMetrics() {
+            fetch('/api/security-metrics')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('activeSessions').textContent = data.active_sessions;
+                    document.getElementById('systemHealth').textContent = data.system_health + '%';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        // Update every 30 seconds
+        setInterval(updateSecurityMetrics, 30000);
+        updateSecurityMetrics(); // Initial call
+    </script>
+</body>
+</html>
